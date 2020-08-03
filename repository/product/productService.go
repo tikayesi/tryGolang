@@ -1,21 +1,17 @@
 package product
 
-import (
-	"database/sql"
-)
-
 type IProductService interface {
 	GetProductByCode(code string) *Product
 }
 
 type ProductService struct {
-	db *sql.DB
+	productRepo IProductRepository
 }
 
 func (ps *ProductService) GetProductByCode(code string) *Product {
 	var product *Product
 	var err error
-	product, err = FindProductByCode(ps.db, code)
+	product, err = ps.productRepo.FindProductByCode(code)
 
 	if err != nil {
 		return nil
@@ -23,6 +19,6 @@ func (ps *ProductService) GetProductByCode(code string) *Product {
 	return product
 }
 
-func NewProductService(db *sql.DB) IProductService {
-	return &ProductService{db}
+func NewProductService(productRepo IProductRepository) IProductService {
+	return &ProductService{productRepo}
 }
